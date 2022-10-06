@@ -9,3 +9,30 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id             Int     @id @default(autoincrement())
+  email          String  @unique
+  username       String  @unique
+  reportedIssues Issue[] @relation("reportedIssues")
+  assignedIssues Issue[] @relation("assignedIssues")
+}
+
+model Issue {
+  id          Int      @id @default(autoincrement())
+  summary     String
+  description String?
+  reporter    User     @relation("reportedIssues", fields: [reporterId], references: [id])
+  reporterId  Int
+  assignee    User     @relation("assignedIssues", fields: [assigneeId], references: [id])
+  assigneeId  Int
+  priority    Priority @default(MEDIUM)
+  dueDate     DateTime
+  createDate  DateTime @default(now())
+}
+
+enum Priority {
+  LOW
+  MEDIUM
+  HIGH
+}
