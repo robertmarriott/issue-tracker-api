@@ -1,0 +1,9 @@
+{
+  "name": "issue-tracker-api",
+  "version": "1.0.0",
+  "description": "Issue tracker REST API",
+  "main": "index.js",
+  "repository": "https://github.com/robertmarriott/issue-tracker-api",
+  "author": "Robert Marriott",
+  "license": "MIT"
+}
