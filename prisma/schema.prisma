@@ -11,28 +11,60 @@ datasource db {
 }
 
 model User {
-  id             Int     @id @default(autoincrement())
-  email          String  @unique
-  username       String  @unique
-  reportedIssues Issue[] @relation("reportedIssues")
-  assignedIssues Issue[] @relation("assignedIssues")
+  id             Int       @id @default(autoincrement())
+  username       String    @unique
+  avatarUrl      String?
+  projects       Project[]
+  reportedIssues Issue[]   @relation("reportedIssues")
+  assignedIssues Issue[]   @relation("assignedIssues")
+  comments       Comment[]
+  createDate     DateTime  @default(now())
+}
+
+model Project {
+  id         Int      @id @default(autoincrement())
+  name       String
+  manager    User     @relation(fields: [managerId], references: [id])
+  managerId  Int
+  issues     Issue[]
+  createDate DateTime @default(now())
 }
 
 model Issue {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
+  project     Project   @relation(fields: [projectId], references: [id])
+  projectId   Int
   summary     String
   description String?
-  reporter    User     @relation("reportedIssues", fields: [reporterId], references: [id])
+  priority    Priority  @default(MEDIUM)
+  reporter    User      @relation("reportedIssues", fields: [reporterId], references: [id])
   reporterId  Int
-  assignee    User     @relation("assignedIssues", fields: [assigneeId], references: [id])
+  assignee    User      @relation("assignedIssues", fields: [assigneeId], references: [id])
   assigneeId  Int
-  priority    Priority @default(MEDIUM)
   dueDate     DateTime
-  createDate  DateTime @default(now())
+  status      Status    @default(OPEN)
+  comments    Comment[]
+  createDate  DateTime  @default(now())
+}
+
+model Comment {
+  id         Int      @id @default(autoincrement())
+  issue      Issue    @relation(fields: [issueId], references: [id])
+  issueId    Int
+  author     User     @relation(fields: [authorId], references: [id])
+  authorId   Int
+  body       String
+  createDate DateTime @default(now())
 }
 
 enum Priority {
   LOW
   MEDIUM
   HIGH
+}
+
+enum Status {
+  OPEN
+  IN_PROGRESS
+  DONE
 }

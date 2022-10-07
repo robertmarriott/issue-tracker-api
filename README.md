@@ -1,3 +1,3 @@
-# Issue Tracker REST API
+# Issue Tracker API
 
-This is a demo project to test Express.js with Typescript and Prisma.
+This is a demo project built with Express.js, Typescript and Prisma.
