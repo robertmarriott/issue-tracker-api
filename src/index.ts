@@ -1,31 +1,11 @@
-import { PrismaClient } from '@prisma/client';
+import express from 'express';
+import { usersRouter } from './routes/usersRouter';
 
-const prisma = new PrismaClient();
+const PORT = 3000;
 
-async function main() {
-  const newUser = await prisma.user.create({
-    data: {
-      username: 'marriott',
-      avatarUrl: 'https://robohash.org/marriott?set=set2',
-    },
-  });
+const app = express();
+app.use(express.json());
 
-  console.log('Created new user: ', newUser);
+app.use('/users', usersRouter);
 
-  const allUsers = await prisma.user.findMany({
-    include: { assignedIssues: true },
-  });
-
-  console.log('All users:');
-  console.dir(allUsers, { depth: null });
-}
-
-(async () => {
-  try {
-    await main();
-  } catch (err) {
-    console.error(err);
-  } finally {
-    await prisma.$disconnect();
-  }
-})();
+app.listen(PORT, () => console.log(`Listening on port ${PORT}`));
